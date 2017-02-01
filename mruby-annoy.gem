@@ -1,0 +1,6 @@
+name: mruby-annoy
+description: AnnoyIndex class
+author: monochromegane
+website: https://github.com/monochromegane/mruby-annoy
+protocol: git
+repository: https://github.com/monochromegane/mruby-annoy.git
