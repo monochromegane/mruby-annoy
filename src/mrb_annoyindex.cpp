@@ -53,6 +53,16 @@ static mrb_value mrb_annoy_index_add_item(mrb_state *mrb, mrb_value self)
   return self;
 }
 
+static mrb_value mrb_annoy_index_build(mrb_state *mrb, mrb_value self)
+{
+  int n_trees;
+  mrb_get_args(mrb, "i", &n_trees);
+
+  AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = static_cast<AnnoyIndex<int, double, Angular, RandRandom>*>(mrb_get_datatype(mrb, self, &annoy_index_type));
+  annoy_index->build(n_trees);
+  return self;
+}
+
 static mrb_value mrb_annoy_index_load(mrb_state *mrb, mrb_value self)
 {
   char *filename;
@@ -95,6 +105,7 @@ void mrb_mruby_annoy_gem_init(mrb_state *mrb)
   MRB_SET_INSTANCE_TT(annoy_index, MRB_TT_DATA);
   mrb_define_method(mrb, annoy_index, "initialize", mrb_annoy_index_init, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, annoy_index, "add_item", mrb_annoy_index_add_item, MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, annoy_index, "build", mrb_annoy_index_build, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, annoy_index, "load", mrb_annoy_index_load, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, annoy_index, "get_n_items", mrb_annoy_index_get_n_items, MRB_ARGS_NONE());
   mrb_define_method(mrb, annoy_index, "get_nns_by_item", mrb_annoy_index_get_nns_by_item, MRB_ARGS_ARG(2, 2));
