@@ -158,6 +158,16 @@ static mrb_value mrb_annoy_index_get_item_vector(mrb_state *mrb, mrb_value self)
   return result;
 }
 
+static mrb_value mrb_annoy_index_get_distance(mrb_state *mrb, mrb_value self)
+{
+  int i, j;
+  mrb_get_args(mrb, "ii", &i, &j);
+
+  AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = static_cast<AnnoyIndex<int, double, Angular, RandRandom>*>(mrb_get_datatype(mrb, self, &annoy_index_type));
+
+  return mrb_float_value(mrb, annoy_index->get_distance(i, j));
+}
+
 static mrb_value mrb_annoy_index_get_n_items(mrb_state *mrb, mrb_value self)
 {
   AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = static_cast<AnnoyIndex<int, double, Angular, RandRandom>*>(mrb_get_datatype(mrb, self, &annoy_index_type));
@@ -178,6 +188,7 @@ void mrb_mruby_annoy_gem_init(mrb_state *mrb)
   mrb_define_method(mrb, annoy_index, "get_nns_by_vector", mrb_annoy_index_get_nns_by_vector, MRB_ARGS_ARG(2, 2));
   mrb_define_method(mrb, annoy_index, "get_item_vector", mrb_annoy_index_get_item_vector, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, annoy_index, "get_n_items", mrb_annoy_index_get_n_items, MRB_ARGS_NONE());
+  mrb_define_method(mrb, annoy_index, "get_distance", mrb_annoy_index_get_distance, MRB_ARGS_REQ(2));
   DONE;
 }
 
