@@ -23,4 +23,5 @@ MRuby::Gem::Specification.new('mruby-annoy') do |spec|
     end
   end
   spec.cxx.include_paths << "#{annoy_dir}/src"
+  spec.cxx.flags << "-std=c++11"
 end
