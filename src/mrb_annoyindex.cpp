@@ -94,8 +94,7 @@ static mrb_value mrb_annoy_index_unload(mrb_state *mrb, mrb_value self)
 
 static mrb_value mrb_annoy_index_get_nns_by_item(mrb_state *mrb, mrb_value self)
 {
-  int i;
-  int n;
+  int i, n;
   int search_k = -1;
   bool include_distances = false;
   mrb_get_args(mrb, "ii|ib", &i, &n, &search_k, &include_distances);
@@ -106,6 +105,7 @@ static mrb_value mrb_annoy_index_get_nns_by_item(mrb_state *mrb, mrb_value self)
   std::vector<double> distances;
   annoy_index->get_nns_by_item(i, n, search_k, &closest, include_distances ? &distances : NULL);
 
+  // TODO: Return with distances if include_distances is true.
   mrb_value result = mrb_ary_new(mrb);
   for(double r : closest) {
     mrb_ary_push(mrb, result, mrb_float_value(mrb, r));
@@ -133,6 +133,7 @@ static mrb_value mrb_annoy_index_get_nns_by_vector(mrb_state *mrb, mrb_value sel
   std::vector<double> distances;
   annoy_index->get_nns_by_vector(&vec[0], n, search_k, &closest, include_distances ? &distances : NULL);
 
+  // TODO: Return with distances if include_distances is true.
   mrb_value result = mrb_ary_new(mrb);
   for(double r : closest) {
     mrb_ary_push(mrb, result, mrb_float_value(mrb, r));
@@ -195,4 +196,3 @@ void mrb_mruby_annoy_gem_init(mrb_state *mrb)
 void mrb_mruby_annoy_gem_final(mrb_state *mrb)
 {
 }
-
