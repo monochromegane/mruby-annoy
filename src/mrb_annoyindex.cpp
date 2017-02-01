@@ -83,6 +83,13 @@ static mrb_value mrb_annoy_index_load(mrb_state *mrb, mrb_value self)
   return mrb_bool_value(annoy_index->load(filename));
 }
 
+static mrb_value mrb_annoy_index_unload(mrb_state *mrb, mrb_value self)
+{
+  AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = static_cast<AnnoyIndex<int, double, Angular, RandRandom>*>(mrb_get_datatype(mrb, self, &annoy_index_type));
+  annoy_index->unload();
+  return self;
+}
+
 static mrb_value mrb_annoy_index_get_n_items(mrb_state *mrb, mrb_value self)
 {
   AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = static_cast<AnnoyIndex<int, double, Angular, RandRandom>*>(mrb_get_datatype(mrb, self, &annoy_index_type));
@@ -118,6 +125,7 @@ void mrb_mruby_annoy_gem_init(mrb_state *mrb)
   mrb_define_method(mrb, annoy_index, "build", mrb_annoy_index_build, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, annoy_index, "save", mrb_annoy_index_save, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, annoy_index, "load", mrb_annoy_index_load, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, annoy_index, "unload", mrb_annoy_index_unload, MRB_ARGS_NONE());
   mrb_define_method(mrb, annoy_index, "get_n_items", mrb_annoy_index_get_n_items, MRB_ARGS_NONE());
   mrb_define_method(mrb, annoy_index, "get_nns_by_item", mrb_annoy_index_get_nns_by_item, MRB_ARGS_ARG(2, 2));
   DONE;
