@@ -45,12 +45,19 @@ static mrb_value mrb_annoy_index_load(mrb_state *mrb, mrb_value self)
   return mrb_bool_value(annoy_index->load(filename));
 }
 
+static mrb_value mrb_annoy_index_get_n_items(mrb_state *mrb, mrb_value self)
+{
+  AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = static_cast<AnnoyIndex<int, double, Angular, RandRandom>*>(mrb_get_datatype(mrb, self, &annoy_index_type));
+  return mrb_fixnum_value(annoy_index->get_n_items());
+}
+
 void mrb_mruby_annoy_gem_init(mrb_state *mrb)
 {
   struct RClass *annoy_index = mrb_define_class(mrb, "AnnoyIndex", mrb->object_class);
   MRB_SET_INSTANCE_TT(annoy_index, MRB_TT_DATA);
   mrb_define_method(mrb, annoy_index, "initialize", mrb_annoy_index_init, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, annoy_index, "load", mrb_annoy_index_load, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, annoy_index, "get_n_items", mrb_annoy_index_get_n_items, MRB_ARGS_NONE());
   DONE;
 }
 
