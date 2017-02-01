@@ -9,6 +9,7 @@
 #include "mruby.h"
 #include <mruby/class.h>
 #include "mruby/data.h"
+#include "mruby/array.h"
 #include "mrb_annoyindex.h"
 #include "annoylib.h"
 
@@ -50,6 +51,26 @@ static mrb_value mrb_annoy_index_get_n_items(mrb_state *mrb, mrb_value self)
   AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = static_cast<AnnoyIndex<int, double, Angular, RandRandom>*>(mrb_get_datatype(mrb, self, &annoy_index_type));
   return mrb_fixnum_value(annoy_index->get_n_items());
 }
+static mrb_value mrb_annoy_index_get_nns_by_item(mrb_state *mrb, mrb_value self)
+{
+  int i;
+  int n;
+  int search_k = -1;
+  bool include_distances = false;
+  mrb_get_args(mrb, "ii|ib", &i, &n, &search_k, &include_distances);
+
+  AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = static_cast<AnnoyIndex<int, double, Angular, RandRandom>*>(mrb_get_datatype(mrb, self, &annoy_index_type));
+
+  std::vector<int> closest;
+  std::vector<double> distances;
+  annoy_index->get_nns_by_item(i, n, search_k, &closest, include_distances ? &distances : NULL);
+
+  mrb_value result = mrb_ary_new(mrb);
+  for(double r : closest) {
+    mrb_ary_push(mrb, result, mrb_float_value(mrb, r));
+  }
+  return result;
+}
 
 void mrb_mruby_annoy_gem_init(mrb_state *mrb)
 {
@@ -58,6 +79,7 @@ void mrb_mruby_annoy_gem_init(mrb_state *mrb)
   mrb_define_method(mrb, annoy_index, "initialize", mrb_annoy_index_init, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, annoy_index, "load", mrb_annoy_index_load, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, annoy_index, "get_n_items", mrb_annoy_index_get_n_items, MRB_ARGS_NONE());
+  mrb_define_method(mrb, annoy_index, "get_nns_by_item", mrb_annoy_index_get_nns_by_item, MRB_ARGS_ARG(2, 2));
   DONE;
 }
 
