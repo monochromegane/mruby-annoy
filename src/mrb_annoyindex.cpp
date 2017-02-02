@@ -11,7 +11,6 @@
 #include "mruby/class.h"
 #include "mruby/data.h"
 #include "mruby/variable.h"
-#include "mrb_annoyindex.h"
 #include "annoylib.h"
 
 #define DONE mrb_gc_arena_restore(mrb, 0);
@@ -175,6 +174,7 @@ static mrb_value mrb_annoy_index_get_n_items(mrb_state *mrb, mrb_value self)
   return mrb_fixnum_value(annoy_index->get_n_items());
 }
 
+extern "C" {
 void mrb_mruby_annoy_gem_init(mrb_state *mrb)
 {
   struct RClass *annoy_index = mrb_define_class(mrb, "AnnoyIndex", mrb->object_class);
@@ -195,4 +195,5 @@ void mrb_mruby_annoy_gem_init(mrb_state *mrb)
 
 void mrb_mruby_annoy_gem_final(mrb_state *mrb)
 {
+}
 }
