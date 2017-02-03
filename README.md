@@ -33,11 +33,21 @@ API are compatible with [Annoy Full Python API](https://github.com/spotify/annoy
 ```ruby
 MRuby::Build.new do |conf|
 
+    # Avoid build failures when C and C++ mrbgems exist.
+    conf.disable_cxx_exception
+    conf.linker do |linker|
+        linker.libraries = %w(stdc++)
+    end
+
     # ... (snip) ...
 
     conf.gem :github => 'monochromegane/mruby-annoy'
 end
 ```
+
+#### NOTE
+
+- `conf.disable_cxx_exception` must be written above `conf.gem` section.
 
 ## License
 
