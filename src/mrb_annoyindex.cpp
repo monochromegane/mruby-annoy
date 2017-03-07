@@ -15,6 +15,11 @@
 
 #define DONE mrb_gc_arena_restore(mrb, 0);
 
+typedef struct
+{
+  int f;
+} AnnoyIndexData;
+
 static void annoy_index_free(mrb_state *mrb, void *ptr)
 {
   AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = static_cast<AnnoyIndex<int, double, Angular, RandRandom>*>(ptr);
@@ -33,7 +38,9 @@ static mrb_value mrb_annoy_index_init(mrb_state *mrb, mrb_value self)
   AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = new AnnoyIndex<int, double, Angular, RandRandom>(mrb_fixnum(f));
 
   DATA_PTR(self) = annoy_index;
-  mrb_iv_set(mrb, self, mrb_intern_lit(mrb, "@f"), f);
+  AnnoyIndexData *data = new AnnoyIndexData;
+  data->f = mrb_fixnum(f);
+  mrb->ud = data;
   return self;
 }
 
@@ -147,8 +154,8 @@ static mrb_value mrb_annoy_index_get_item_vector(mrb_state *mrb, mrb_value self)
 
   AnnoyIndex<int, double, Angular, RandRandom>* annoy_index = static_cast<AnnoyIndex<int, double, Angular, RandRandom>*>(mrb_get_datatype(mrb, self, &annoy_index_type));
 
-  mrb_value f = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@f"));
-  std::vector<double> vec(mrb_fixnum(f));
+  AnnoyIndexData *data = static_cast<AnnoyIndexData *>(mrb->ud);
+  std::vector<double> vec(data->f);
   annoy_index->get_item(i, &vec[0]);
 
   mrb_value result = mrb_ary_new(mrb);
