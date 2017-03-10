@@ -20,6 +20,7 @@ MRuby::Gem::Specification.new('mruby-annoy') do |spec|
     Dir.chdir(build_dir) do
       e = {}
       run_command e, 'git clone https://github.com/spotify/annoy.git'
+      run_command e, "git --git-dir=#{annoy_dir}/.git --work-tree=#{annoy_dir} checkout d016892"
     end
   end
   spec.cxx.include_paths << "#{annoy_dir}/src"
